@@ -42,16 +42,20 @@ motor <- city_data[city_data$SCC %in% motor_scc$SCC,]
 # Aggregate total emissions by year and county (i.e. fips)
 emissions_by_year <- ddply(motor, .(year, fips), summarize, total = sum(Emissions))
 
+# Use 1999 (first sample) as the reference point to show
+# the evolution of each county from that point forward
+emissions_1999_baseline <- ddply(emissions_by_year, .(fips), transform, total = total - total[1])
+
 # Create a PNG
 png(file = "plot6.png", width = 480, height = 480, units = "px", bg = "transparent")
 
 # Plot
-g <- ggplot(emissions_by_year, aes(year, total, colour = fips))
+g <- ggplot(emissions_1999_baseline, aes(year, total, colour = fips))
 p <- g +
         geom_point(size = 3) +
         geom_smooth(method = "lm") +
-        ggtitle("Total PM2.5 Emissions for Motor Vehicles per year") +
-        ylab("Total Emissions") +
+        ggtitle("Evolution of Total Emissions for Motor Vehicles per Year") +
+        ylab("Total Emission Differential from 1999 Baseline") +
         scale_colour_discrete("County", labels = c("Los Angeles", "Baltimore"))
 
 print(p)
