@@ -1,0 +1,7 @@
+.RData
+.Rhistory
+UCI HAR Dataset/
+*.zip
+household_power_consumption.txt
+cache.txt
+*.rds
